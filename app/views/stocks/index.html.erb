@@ -1,0 +1,166 @@
+<div>
+  <div>
+    <h1>
+      List of all stocks
+    </h1>
+  </div>
+</div>
+
+<hr>
+
+<div>
+  <div>
+    <h2>
+      Add a new stock
+    </h2>
+
+    <form action="/insert_stock" method="post">
+      <div>
+        <label for="day_box">
+          Day
+        </label>
+
+        <input type="date" id="day_box" name="query_day">
+      </div>
+
+      <div>
+        <label for="close_box">
+          Close
+        </label>
+
+        <input type="text" id="close_box" name="query_close">
+      </div>
+
+      <div>
+        <label for="open_box">
+          Open
+        </label>
+
+        <input type="text" id="open_box" name="query_open">
+      </div>
+
+      <div>
+        <label for="high_box">
+          High
+        </label>
+
+        <input type="text" id="high_box" name="query_high">
+      </div>
+
+      <div>
+        <label for="low_box">
+          Low
+        </label>
+
+        <input type="text" id="low_box" name="query_low">
+      </div>
+
+      <div>
+        <label for="return_box">
+          Return
+        </label>
+
+        <input type="text" id="return_box" name="query_return">
+      </div>
+
+      <button>
+        Create stock
+      </button>
+    </form>
+  </div>
+</div>
+
+<hr>
+<div>
+  <div>
+    <table border="1">
+      <tr>
+        <th>
+          ID
+        </th>
+
+        <th>
+          Day
+        </th>
+
+        <th>
+          Close
+        </th>
+
+        <th>
+          Open
+        </th>
+
+        <th>
+          High
+        </th>
+
+        <th>
+          Low
+        </th>
+
+        <th>
+          Return
+        </th>
+
+        <th>
+          Created at
+        </th>
+
+        <th>
+          Updated at
+        </th>
+
+        <th>
+        </th>
+      </tr>
+
+      <% @list_of_stocks.each do |a_stock| %>
+      <tr>
+        <td>
+          <%= a_stock.id %>
+        </td>
+
+        <td>
+          <%= a_stock.day %>
+        </td>
+
+        <td>
+          <%= a_stock.close %>
+        </td>
+
+        <td>
+          <%= a_stock.open %>
+        </td>
+
+        <td>
+          <%= a_stock.high %>
+        </td>
+
+        <td>
+          <%= a_stock.low %>
+        </td>
+
+        <td>
+          <%= a_stock.return %>
+        </td>
+
+        <td>
+          <%= time_ago_in_words(a_stock.created_at) %> ago
+        </td>
+        <td>
+          <%= time_ago_in_words(a_stock.updated_at) %> ago
+        </td>
+
+        <td>
+          <a href="/stocks/<%= a_stock.id %>">
+            Show details
+          </a>
+        </td>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
+
+<hr>

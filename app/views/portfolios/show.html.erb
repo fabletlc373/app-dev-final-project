@@ -1,0 +1,146 @@
+<div>
+  <div>
+    <h1>
+      Portfolio #<%= @the_portfolio.id %> details
+    </h1>
+
+    <div>
+      <div>
+        <a href="/portfolios">
+          Go back
+        </a>
+      </div>
+
+      <div>
+        <a href="/delete_portfolio/<%= @the_portfolio.id %>">
+          Delete portfolio
+        </a>
+      </div>
+    </div>
+
+    <dl>
+      <dt>
+        Day
+      </dt>
+      <dd>
+        <%= @the_portfolio.day %>
+      </dd>
+
+      <dt>
+        Stock
+      </dt>
+      <dd>
+        <%= @the_portfolio.stock_id %>
+      </dd>
+
+      <dt>
+        Weight
+      </dt>
+      <dd>
+        <%= @the_portfolio.weight %>
+      </dd>
+
+      <dt>
+        Dollarpos
+      </dt>
+      <dd>
+        <%= @the_portfolio.dollarpos %>
+      </dd>
+
+      <dt>
+        Portfoliovalue
+      </dt>
+      <dd>
+        <%= @the_portfolio.portfoliovalue %>
+      </dd>
+
+      <dt>
+        User
+      </dt>
+      <dd>
+        <%= @the_portfolio.user_id %>
+      </dd>
+
+      <dt>
+        Created at
+      </dt>
+      <dd>
+        <%= time_ago_in_words(@the_portfolio.created_at) %> ago
+      </dd>
+
+      <dt>
+        Updated at
+      </dt>
+      <dd>
+        <%= time_ago_in_words(@the_portfolio.updated_at) %> ago
+      </dd>
+    </dl>
+  </div>
+</div>
+
+<hr>
+
+
+<div>
+  <div>
+    <h2>
+      Edit portfolio
+    </h2>
+
+    <form action="/modify_portfolio/<%= @the_portfolio.id %>"  method="post" >
+      <div>
+        <label for="day_box">
+          Day
+        </label>
+
+        <input type="date" id="day_box" name="query_day" value="<%= @the_portfolio.day %>">
+      </div>
+
+      <div>
+        <label for="stock_id_box">
+          Stock
+        </label>
+
+        <input type="text" id="stock_id_box" name="query_stock_id" value="<%= @the_portfolio.stock_id %>">
+      </div>
+
+      <div>
+        <label for="weight_box">
+          Weight
+        </label>
+
+        <input type="text" id="weight_box" name="query_weight" value="<%= @the_portfolio.weight %>">
+      </div>
+
+      <div>
+        <label for="dollarpos_box">
+          Dollarpos
+        </label>
+
+        <input type="text" id="dollarpos_box" name="query_dollarpos" value="<%= @the_portfolio.dollarpos %>">
+      </div>
+
+      <div>
+        <label for="portfoliovalue_box">
+          Portfoliovalue
+        </label>
+
+        <input type="text" id="portfoliovalue_box" name="query_portfoliovalue" value="<%= @the_portfolio.portfoliovalue %>">
+      </div>
+
+      <div>
+        <label for="user_id_box">
+          User
+        </label>
+
+        <input type="text" id="user_id_box" name="query_user_id" value="<%= @the_portfolio.user_id %>">
+      </div>
+
+      <button>
+        Update portfolio
+      </button>
+    </form>
+  </div>
+</div>
+
+<hr>
