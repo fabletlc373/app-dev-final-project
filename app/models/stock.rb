@@ -9,8 +9,11 @@
 #  low        :decimal(, )
 #  open       :decimal(, )
 #  return     :decimal(, )
+#  ticker     :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
 class Stock < ApplicationRecord
+  validates(:ticker, {:uniqueness => {:scope => [:id, :day]}})
+  validates(:day, {:uniqueness => {:scope => [:id]}})
 end
