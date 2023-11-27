@@ -16,51 +16,11 @@
 
     <form action="/insert_stock" method="post">
       <div>
-        <label for="day_box">
-          Day
+        <label for="ticker_box">
+          Ticker
         </label>
 
-        <input type="date" id="day_box" name="query_day">
-      </div>
-
-      <div>
-        <label for="close_box">
-          Close
-        </label>
-
-        <input type="text" id="close_box" name="query_close">
-      </div>
-
-      <div>
-        <label for="open_box">
-          Open
-        </label>
-
-        <input type="text" id="open_box" name="query_open">
-      </div>
-
-      <div>
-        <label for="high_box">
-          High
-        </label>
-
-        <input type="text" id="high_box" name="query_high">
-      </div>
-
-      <div>
-        <label for="low_box">
-          Low
-        </label>
-
-        <input type="text" id="low_box" name="query_low">
-      </div>
-
-      <div>
-        <label for="return_box">
-          Return
-        </label>
-
-        <input type="text" id="return_box" name="query_return">
+        <input type="text" id="ticker_box" name="query_ticker">
       </div>
 
       <button>
@@ -83,6 +43,10 @@
           Day
         </th>
 
+        <th>
+          Ticker
+        </th>
+        
         <th>
           Close
         </th>
@@ -123,6 +87,10 @@
 
         <td>
           <%= a_stock.day %>
+        </td>
+
+        <td>
+          <%= a_stock.ticker %>
         </td>
 
         <td>

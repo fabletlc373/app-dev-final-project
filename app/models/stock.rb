@@ -13,7 +13,11 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
+# Indexes
+#
+#  index_stocks_on_day_and_ticker  (day,ticker)
+#
 class Stock < ApplicationRecord
-  validates(:ticker, {:uniqueness => {:scope => [:id, :day]}})
-  validates(:day, {:uniqueness => {:scope => [:id]}})
+  validates(:ticker, {:uniqueness => {:scope => [:day], :allow_nil => false}})
+  # validates(:day, {:uniqueness => {:scope => [:id]}})
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_21_035116) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_26_232735) do
   create_table "portfolios", force: :cascade do |t|
     t.date "day"
     t.integer "stock_id"
@@ -32,6 +32,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_035116) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "ticker"
+    t.index ["day", "ticker"], name: "index_stocks_on_day_and_ticker"
   end
 
   create_table "users", force: :cascade do |t|
