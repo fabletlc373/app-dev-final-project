@@ -21,8 +21,15 @@ class Stock < ApplicationRecord
   validates(:ticker, {:uniqueness => {:scope => [:day], :allow_nil => false}})
   # validates(:day, {:uniqueness => {:scope => [:id]}})
 
-  def lastdate
-    the_data=Stock.where(:ticker => t).maximum(:day)
+  def lastsnap
+    qry = "select *
+    from stocks 
+    group by ticker
+    having max(day)
+    order by day
+    "
+    the_data = Stock.connection.execute(qry)
+    
     return the_data
   end
 

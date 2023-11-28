@@ -30,11 +30,9 @@
   </div>
 
   <div>
-    <h2>
-      Refresh all data
-    </h2>
-
-    <form action="/refresh_stock" method="post">
+    <h3>Refresh all data</h3>
+    Note that there is an 8 name per minute restriction, and a 800 credit limit per day!
+    <form action="/refresh_stock">
       <button>
         Refresh
       </button>
@@ -95,46 +93,46 @@
       <% @list_of_stocks.each do |a_stock| %>
       <tr>
         <td>
-          <%= a_stock.id %>
+          <%= a_stock.fetch('id') %>
         </td>
 
         <td>
-          <%= a_stock.day %>
+          <%= a_stock.fetch('day') %>
         </td>
 
         <td>
-          <%= a_stock.ticker %>
+          <%= a_stock.fetch('ticker') %>
         </td>
 
         <td>
-          <%= a_stock.close %>
+          <%= a_stock.fetch('close') %>
         </td>
 
         <td>
-          <%= a_stock.open %>
+          <%= a_stock.fetch('open') %>
         </td>
 
         <td>
-          <%= a_stock.high %>
+          <%= a_stock.fetch('high') %>
         </td>
 
         <td>
-          <%= a_stock.low %>
+          <%= a_stock.fetch('low') %>
         </td>
 
         <td>
-          <%= a_stock.return %>
+          <%= a_stock.fetch('return') %>
         </td>
 
         <td>
-          <%= time_ago_in_words(a_stock.created_at) %> ago
+          <%= time_ago_in_words(a_stock.fetch('created_at')) %> ago
         </td>
         <td>
-          <%= time_ago_in_words(a_stock.updated_at) %> ago
+          <%= time_ago_in_words(a_stock.fetch('updated_at')) %> ago
         </td>
 
         <td>
-          <a href="/stocks/<%= a_stock.id %>">
+          <a href="/stocks/<%= a_stock.fetch('id') %>">
             Show details
           </a>
         </td>

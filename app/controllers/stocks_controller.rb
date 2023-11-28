@@ -1,16 +1,26 @@
 class StocksController < ApplicationController
   def refresh_data
+    the_date = Date.today
     # refresh all stocks in the universe
+    all_stocks = Stock.distinct.pluck(:ticker)
+    all_stocks.each do |s|
+      next if Stock.where('ticker=? AND day=?', s, the_date).count > 0
+      api_url = "https://api.twelvedata.com/time_series?symbol=#{s}&interval=1day&apikey=#{ENV['STOCK_API_KEY']}"
 
+      raw_data = HTTP.get(api_url)
+      parsed_data = JSON.parse(raw_data)
+      all_prices_array = parsed_data.fetch('values')
+      all_prices_array = all_prices_array.map{|x| x.except('volume')}
+      all_prices_array = all_prices_array.each{|h| h.store('day',h.delete('datetime'))}
+      all_prices_array.each{|x| x['ticker']=s}
+      
+      Stock.create(all_prices_array)
+    end 
+    redirect_to("/stocks")
   end
   
   def index
-
-    display_date = Date.today
-    matching_stocks = Stock.all.where(:Day <= )
-
-    @list_of_stocks = matching_stocks.order({ :created_at => :desc })
-
+    @list_of_stocks = Stock.new.lastsnap
     render({ :template => "stocks/index" })
   end
 
