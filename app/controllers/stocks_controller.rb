@@ -13,7 +13,8 @@ class StocksController < ApplicationController
       all_prices_array = all_prices_array.map{|x| x.except('volume')}
       all_prices_array = all_prices_array.each{|h| h.store('day',h.delete('datetime'))}
       all_prices_array.each{|x| x['ticker']=s}
-      
+      all_prices_array.each_cons(2).map{|p1, p2| p1['return'] = (((p1['close'].to_f / p2['close'].to_f) - 1)*100).round(3)}
+      all_prices_array.last['return'] = 0
       Stock.create(all_prices_array)
     end 
     redirect_to("/stocks")
@@ -52,7 +53,8 @@ class StocksController < ApplicationController
       all_prices_array = all_prices_array.map{|x| x.except('volume')}
       all_prices_array = all_prices_array.each{|h| h.store('day',h.delete('datetime'))}
       all_prices_array.each{|x| x['ticker']=newstock}
-
+      all_prices_array.each_cons(2).map{|p1, p2| p1['return'] = (((p1['close'].to_f / p2['close'].to_f) - 1)*100).round(3)}
+      all_prices_array.last['return'] = 0
       Stock.insert_all(all_prices_array)
       redirect_to("/stocks")
     else
