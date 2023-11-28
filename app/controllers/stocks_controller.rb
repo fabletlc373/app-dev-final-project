@@ -26,6 +26,7 @@ class StocksController < ApplicationController
   end
 
   def show
+    ######### to do... figure out plotting here ##################
     the_id = params.fetch("path_id")
 
     matching_stocks = Stock.where({ :id => the_id })

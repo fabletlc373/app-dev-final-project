@@ -7,6 +7,10 @@ class PortfoliosController < ApplicationController
     render({ :template => "portfolios/index" })
   end
 
+  def build
+    @all_stocks = Stock.new.allstocks
+    render({ :template => "portfolios/build" })
+  end
   def show
     the_id = params.fetch("path_id")
 
@@ -18,6 +22,20 @@ class PortfoliosController < ApplicationController
   end
 
   def create
+    asdfas
+    
+    weights=params.keys.grep(/weights/)
+    weights.each do |w|
+      Portfolio.new
+      Portfolio.day = params.fetch('startdate')
+      s = w.gsub(/_weights/, '')   
+      Portfolio.ticker = s
+      Portfolio.weight = params.fetch(w)
+
+    end
+
+
+
     the_portfolio = Portfolio.new
     the_portfolio.day = params.fetch("query_day")
     the_portfolio.stock_id = params.fetch("query_stock_id")

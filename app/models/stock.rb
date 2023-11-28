@@ -33,4 +33,7 @@ class Stock < ApplicationRecord
     return the_data
   end
 
+  def allstocks
+    return Stock.distinct.pluck(:ticker)
+  end
 end

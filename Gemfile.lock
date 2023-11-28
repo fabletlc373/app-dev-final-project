@@ -149,6 +149,7 @@ GEM
       rchardet (~> 1.8)
     globalid (1.1.0)
       activesupport (>= 5.0)
+    gnuplot (2.6.2)
     grade_runner (0.0.8)
       activesupport (>= 2.3.5)
       faraday-retry (~> 1.0.3)
@@ -422,6 +423,7 @@ DEPENDENCIES
   draft_generators
   draft_matchers
   faker
+  gnuplot
   grade_runner
   htmlbeautifier
   http

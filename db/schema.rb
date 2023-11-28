@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_26_232735) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_28_043402) do
   create_table "portfolios", force: :cascade do |t|
     t.date "day"
-    t.integer "stock_id"
+    t.string "ticker"
     t.decimal "weight"
     t.decimal "dollarpos"
     t.decimal "portfoliovalue"

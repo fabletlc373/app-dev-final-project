@@ -1,0 +1,34 @@
+
+    <h1>
+      Initial Portfolio Setup
+    </h1>
+
+<hr>
+
+  <div>
+    <h2>
+      Create portfolio
+    </h2>
+<form action="/create_portfolio" method="post">
+    <% @all_stocks.each do |a_stock| %>
+      <div>
+      <label for=<%=a_stock%>><%=a_stock%> weights:</label>
+      <input type="number" id=<%=a_stock%> name="<%=a_stock%>_weights">
+      </div>
+      <div>
+      </div>
+    <%end%>
+    <div>
+      <label for='startdate'> StartDate:</label>
+      <input type="date" id='startdate' name="startdate">
+      </div>
+      <div>
+      <label for='dollarval'>Inital Dollar Position:</label>
+      <input type="number" id='dollarval' name="dollarval">
+    </div>
+      <button>
+        Create portfolio
+      </button>
+    </div>
+</form>
+<hr>

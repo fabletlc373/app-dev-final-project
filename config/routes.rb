@@ -3,7 +3,8 @@ Rails.application.routes.draw do
   # Routes for the Portfolio resource:
 
   # CREATE
-  post("/insert_portfolio", { :controller => "portfolios", :action => "create" })
+  get("/build_portfolio", { :controller => "portfolios", :action => "build" })
+  post("/create_portfolio", { :controller => "portfolios", :action => "create"})
           
   # READ
   get("/portfolios", { :controller => "portfolios", :action => "index" })
