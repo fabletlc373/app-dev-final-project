@@ -6,8 +6,8 @@ class StocksController < ApplicationController
   
   def index
 
-    #display_date = Date.today
-    matching_stocks = Stock.all
+    display_date = Date.today
+    matching_stocks = Stock.all.where(:Day <= )
 
     @list_of_stocks = matching_stocks.order({ :created_at => :desc })
 

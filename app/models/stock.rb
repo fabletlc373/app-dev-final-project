@@ -20,4 +20,10 @@
 class Stock < ApplicationRecord
   validates(:ticker, {:uniqueness => {:scope => [:day], :allow_nil => false}})
   # validates(:day, {:uniqueness => {:scope => [:id]}})
+
+  def lastdate
+    the_data=Stock.where(:ticker => t).maximum(:day)
+    return the_data
+  end
+
 end
