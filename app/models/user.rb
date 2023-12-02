@@ -21,4 +21,12 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+  
+  def has_portfolio
+    if Portfolio.where({:user_id => self.id}).count > 0
+      return true
+    else
+      return false
+    end
+  end
 end

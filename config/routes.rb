@@ -6,10 +6,8 @@ Rails.application.routes.draw do
   get("/build_portfolio", { :controller => "portfolios", :action => "build" })
   post("/create_portfolio", { :controller => "portfolios", :action => "create"})
           
-  # READ
-  get("/portfolios", { :controller => "portfolios", :action => "index" })
-  
-  get("/portfolios/:path_id", { :controller => "portfolios", :action => "show" })
+  # view
+  get("/my_portfolio", { :controller => "portfolios", :action => "show" })
   
   # UPDATE
   
