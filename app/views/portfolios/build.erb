@@ -13,7 +13,7 @@
     <% @all_stocks.each do |a_stock| %>
       <div>
       <label for=<%=a_stock%>><%=a_stock%> weights:</label>
-      <input type="number" id=<%=a_stock%> name="<%=a_stock%>_weights">
+      <input type="number" min="0" max="1" step="0.01" id=<%=a_stock%> name="<%=a_stock%>_weights">
       </div>
       <div>
       </div>

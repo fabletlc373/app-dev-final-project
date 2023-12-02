@@ -11,6 +11,7 @@ class PortfoliosController < ApplicationController
     @all_stocks = Stock.new.allstocks
     render({ :template => "portfolios/build" })
   end
+
   def show
     the_id = params.fetch("path_id")
 
@@ -22,18 +23,54 @@ class PortfoliosController < ApplicationController
   end
 
   def create
-    asdfas
-    
+    # assumes that each day you will hold the portfolio according to these weights
     weights=params.keys.grep(/weights/)
+    # first, insert each weight for the initial date
+
     weights.each do |w|
-      Portfolio.new
-      Portfolio.day = params.fetch('startdate')
+      init_portfolio = Portfolio.new
+      init_portfolio.day = params.fetch('startdate')
       s = w.gsub(/_weights/, '')   
-      Portfolio.ticker = s
-      Portfolio.weight = params.fetch(w)
+      init_portfolio.ticker = s
+      init_portfolio.weight = params.fetch(w)
+      init_portfolio.portfoliovalue = params.fetch('dollarval')
+      init_portfolio.dollarpos = params.fetch('dollarval').to_f * params.fetch(w).to_f
+      init_portfolio.user_id = current_user.id
+      if init_portfolio.valid?
+        init_portfolio.save
+      end
+      #Portfolio.dollarpos = params.fetch(w)
+    end
+
+    # now cumulate the returns for the rest of the days
+    stocksinptf = params.keys.grep(/weights/).map{|w| w.gsub(/_weights/, '')}
+    date_range = Stock.where({ticker: stocksinptf}).select(:day).distinct
+
+    date_range.each do |d|
+      weights.each do |w|
+        port_value = Portfolio.new
+
+        port_value.day = params.fetch('startdate')
+        s = w.gsub(/_weights/, '')   
+        port_value.ticker.ticker = s
+        port_value.weight = params.fetch(w)
+        # the dollar pos is the same as the initial value
+        init_portfolio.dollarpos = params.fetch('dollarval').to_f * params.fetch(w).to_f
+
+        init_portfolio.portfoliovalue = params.fetch('dollarval')
+        
+        init_portfolio.user_id = current_user.id
+        if init_portfolio.valid?
+          init_portfolio.save
+        end
+
+      end
+
+      
 
     end
 
+    asdf
 
 
     the_portfolio = Portfolio.new
