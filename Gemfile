@@ -43,7 +43,8 @@ gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 gem "bootsnap", require: false
 
 # for plotting
-gem "gnuplot"
+gem "chartkick"
+gem "groupdate"
 
 # Use Sass to process CSS
 # gem "sassc-rails"

@@ -45,6 +45,9 @@
     </dl>
   </div>
 </div>
+<hr>
+<!-- some plotting?-->
+<%=line_chart @matching_stock.group_by_day(:day).sum(:close), points: false, xtitle: 'Day', ytitle: 'Close $'%>
 
 <hr>
 <h3>Recent 100-day data </h3>
