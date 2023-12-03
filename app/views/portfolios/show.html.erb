@@ -23,41 +23,25 @@
         <th>
           Day
         </th>
-
-        <th>
-          Ticker
-        </th>
-        <th>
-          Weight
-        </th>
-        <th>
-          Dollarpos
-        </th>
         <th>
           Portfolio Value
+        </th>
+        <th>
+          Portfolio Return
         </th>
 
         <% @the_portfolio.each do |p| %>
           <tr>
             <td>
-              <%= p.day %>
+              <%= p['day'] %>
+            </td>
+            <td>
+              <%= p['portfoliovalue'] %>
+            </td>
+            <td>
+              <%= p['return'] %>
             </td>
 
-            <td>
-              <%= p.ticker %>
-            </td>
-
-            <td>
-              <%= p.weight %>
-            </td>
-
-            <td>
-              <%= p.dollarpos %>
-            </td>
-
-            <td>
-              <%= p.portfoliovalue %>
-            </td>
           </tr>
         <%end%>
 

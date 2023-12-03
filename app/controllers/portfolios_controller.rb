@@ -13,12 +13,17 @@ class PortfoliosController < ApplicationController
 
   def show
     # check if has portfolio
-    if current_user.has_portfolio && current_user!=nil then
+    if current_user.has_portfolio==true && current_user!=nil then
+      @current_user = current_user
       #todo: add the returns to this table
-      @the_portfolio = Portfolio.where({:user_id => current_user.id}).select('DISTINCT day, portfoliovalue, return')
+      sql = "select distinct day, portfoliovalue, return from portfolios where user_id=#{current_user.id}"
+      @the_portfolio = ActiveRecord::Base.connection.exec_query(sql)
+
+      # compute some additional statistics
+
       render({ :template => "portfolios/show" })
-      # consider redirecting
     else
+      redirect_to("/build_portfolio", { :alert => "No portfolio found... build yours here!" })
     end
     
   end
@@ -30,7 +35,7 @@ class PortfoliosController < ApplicationController
 
   def create
     # check if the user current has a portfolio, if they do, redirect to the portfolio home page
-    if current_user != nil && current_user.has_portfolio == FALSE
+    if current_user != nil && current_user.has_portfolio==false then
 
       # assumes that each day you will hold the portfolio according to these weights
       weights = params.keys.grep(/weights/)
@@ -44,6 +49,7 @@ class PortfoliosController < ApplicationController
         init_portfolio.portfoliovalue = params.fetch("dollarval")
         init_portfolio.dollarpos = params.fetch("dollarval").to_f * params.fetch(w).to_f
         init_portfolio.user_id = current_user.id
+        init_portfolio.return=0
         if init_portfolio.valid?
           init_portfolio.save
         end
@@ -52,7 +58,7 @@ class PortfoliosController < ApplicationController
 
       # compute the daily returns... its easier to do this directly via sql
 
-      sql = "select stocks.day as day, sum(weight * return) as return from portfolios
+      sql = "select stocks.day as day, sum(weight * stocks.return) as return from portfolios
     right join stocks
     on stocks.ticker=portfolios.ticker and portfolios.user_id=#{current_user.id}
     where portfolios.weight!=0 and stocks.day > '#{params.fetch("startdate")}'
@@ -66,6 +72,7 @@ class PortfoliosController < ApplicationController
       ptf_dates.each do |d|
         i = ptf_dates.index(d)
         ptf_value_day = ptf_values[i]
+        ptf_return_day = ptf_returns[i]
         weights.each do |w|
           d_portfolio = Portfolio.new
           d_portfolio.day = d
@@ -75,15 +82,16 @@ class PortfoliosController < ApplicationController
           d_portfolio.portfoliovalue = ptf_value_day
           d_portfolio.dollarpos = ptf_value_day * params.fetch(w).to_f
           d_portfolio.user_id = current_user.id
+          d_portfolio.return = ptf_return_day
           if d_portfolio.valid?
             d_portfolio.save
           end
         end
       end
-      redirect_to("/portfolios", { :notice => "Portfolio created successfully." })
+      redirect_to("/my_portfolio", { :notice => "Portfolio created successfully." })
     else
       # redirect to actual portfolio page
-      redirect_to("/portfolios", { :alert => the_portfolio.errors.full_messages.to_sentence })
+      redirect_to("/my_portfolio", { :alert => "A portfolio already exists!" })
     end
   end
 
@@ -108,10 +116,9 @@ class PortfoliosController < ApplicationController
 
   def destroy
     the_id = params.fetch("path_id")
-    the_portfolio = Portfolio.where({ :id => the_id }).at(0)
+    the_portfolio = Portfolio.where({ :user_id => the_id })
+    the_portfolio.destroy_all
 
-    the_portfolio.destroy
-
-    redirect_to("/portfolios", { :notice => "Portfolio deleted successfully." })
+    redirect_to("/build_portfolio", { :notice => "Portfolio deleted successfully." })
   end
 end

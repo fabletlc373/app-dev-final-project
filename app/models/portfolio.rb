@@ -6,6 +6,7 @@
 #  day            :date
 #  dollarpos      :decimal(, )
 #  portfoliovalue :decimal(, )
+#  return         :decimal(, )
 #  ticker         :string
 #  weight         :decimal(, )
 #  created_at     :datetime         not null
