@@ -18,6 +18,33 @@
       </div>
     </div>
 
+
+    <dl>
+      <dt>
+        Average annualized return
+      </dt>
+      <dd>
+        <%=@annualized_ret%>
+      </dd>
+
+      <dt>
+        Annualized Std Dev
+      </dt>
+      Note this assumes independent returns
+      <dd>
+        <%= @annualized_std %>
+      </dd>
+
+       <dt>
+        Annualized Sharpe Ratio
+      </dt>
+      Note this assumes independent returns
+      <dd>
+        <%= @annualized_sr %>
+      </dd>
+
+    </dl>
+
     <table border="1">
       <tr>
         <th>

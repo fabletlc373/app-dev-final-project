@@ -20,6 +20,7 @@
 class Stock < ApplicationRecord
   validates(:ticker, {:uniqueness => {:scope => [:day], :allow_nil => false}})
   # validates(:day, {:uniqueness => {:scope => [:id]}})
+  belongs_to(:portfolio, class_name: 'Portfolio', foreign_key: 'ticker')
 
   def lastsnap
     qry = "select *
@@ -36,4 +37,7 @@ class Stock < ApplicationRecord
   def allstocks
     return Stock.distinct.pluck(:ticker)
   end
+
+  # check if this stock is used in ANY portfolio
+  
 end

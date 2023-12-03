@@ -20,7 +20,9 @@ class PortfoliosController < ApplicationController
       @the_portfolio = ActiveRecord::Base.connection.exec_query(sql)
 
       # compute some additional statistics
-
+      # get the returns first
+      rets = @the_portfolio.rows.map{|r| r[2]}
+      @annualized_ret, @annualized_std, @annualized_sr = self.return_stats(rets)
       render({ :template => "portfolios/show" })
     else
       redirect_to("/build_portfolio", { :alert => "No portfolio found... build yours here!" })

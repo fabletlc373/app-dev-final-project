@@ -24,17 +24,14 @@ Rails.application.routes.draw do
   # CREATE
   post("/insert_stock", { :controller => "stocks", :action => "create" })
           
-  # READ
+  # INDEX
   get("/stocks", { :controller => "stocks", :action => "index" })
   
-  get("/stocks/:path_id", { :controller => "stocks", :action => "show" })
-  
-  # UPDATE
-  
-  post("/modify_stock/:path_id", { :controller => "stocks", :action => "update" })
+  # DETAILS
+  get("/stocks/:ticker", { :controller => "stocks", :action => "show" })
   
   # DELETE
-  get("/delete_stock/:path_id", { :controller => "stocks", :action => "destroy" })
+  get("/delete_stock/:ticker", { :controller => "stocks", :action => "destroy" })
 
   # REFRESH
   get("/refresh_stock", { :controller => "stocks", :action => "refresh_data" })

@@ -1,7 +1,7 @@
 <div>
   <div>
     <h1>
-      Stock #<%= @the_stock.id %> details
+      <%= @the_ticker %> details
     </h1>
 
     <div>
@@ -12,7 +12,7 @@
       </div>
 
       <div>
-        <a href="/delete_stock/<%= @the_stock.id %>">
+        <a href="/delete_stock/<%= @the_ticker %>">
           Delete stock
         </a>
       </div>
@@ -20,127 +20,90 @@
 
     <dl>
       <dt>
-        Day
+        Average annualized return
       </dt>
       <dd>
-        <%= @the_stock.day %>
+        <%=@annualized_ret  %>
       </dd>
 
       <dt>
-        Close
+        Annualized Std Dev
       </dt>
+      Note this assumes independent returns
       <dd>
-        <%= @the_stock.close %>
+        <%= @annualized_std %>
       </dd>
 
-      <dt>
-        Open
+       <dt>
+        Annualized Std Dev
       </dt>
+      Note this assumes independent returns
       <dd>
-        <%= @the_stock.open %>
+        <%= @annualized_sr %>
       </dd>
 
-      <dt>
-        High
-      </dt>
-      <dd>
-        <%= @the_stock.high %>
-      </dd>
-
-      <dt>
-        Low
-      </dt>
-      <dd>
-        <%= @the_stock.low %>
-      </dd>
-
-      <dt>
-        Return
-      </dt>
-      <dd>
-        <%= @the_stock.return %>
-      </dd>
-
-      <dt>
-        Created at
-      </dt>
-      <dd>
-        <%= time_ago_in_words(@the_stock.created_at) %> ago
-      </dd>
-
-      <dt>
-        Updated at
-      </dt>
-      <dd>
-        <%= time_ago_in_words(@the_stock.updated_at) %> ago
-      </dd>
     </dl>
   </div>
 </div>
 
 <hr>
-
-
+<h3>Recent 100-day data </h3>
 <div>
   <div>
-    <h2>
-      Edit stock
-    </h2>
-
-    <form action="/modify_stock/<%= @the_stock.id %>"  method="post" >
-      <div>
-        <label for="day_box">
+    <table border="1">
+      <tr>
+        <th>
           Day
-        </label>
+        </th>
 
-        <input type="date" id="day_box" name="query_day" value="<%= @the_stock.day %>">
-      </div>
-
-      <div>
-        <label for="close_box">
+        <th>
           Close
-        </label>
+        </th>
 
-        <input type="text" id="close_box" name="query_close" value="<%= @the_stock.close %>">
-      </div>
-
-      <div>
-        <label for="open_box">
+        <th>
           Open
-        </label>
-
-        <input type="text" id="open_box" name="query_open" value="<%= @the_stock.open %>">
-      </div>
-
-      <div>
-        <label for="high_box">
+        </th>
+        
+        <th>
           High
-        </label>
+        </th>
 
-        <input type="text" id="high_box" name="query_high" value="<%= @the_stock.high %>">
-      </div>
-
-      <div>
-        <label for="low_box">
+        <th>
           Low
-        </label>
+        </th>
 
-        <input type="text" id="low_box" name="query_low" value="<%= @the_stock.low %>">
-      </div>
-
-      <div>
-        <label for="return_box">
+        <th>
           Return
-        </label>
+        </th>
 
-        <input type="text" id="return_box" name="query_return" value="<%= @the_stock.return %>">
-      </div>
+      <% @matching_stock_recent100.each do |a_day| %>
+      <tr>
+        <td>
+          <%= a_day.fetch('day') %>
+        </td>
 
-      <button>
-        Update stock
-      </button>
-    </form>
+        <td>
+          <%= a_day.fetch('close').round(2) %>
+        </td>
+
+        <td>
+          <%= a_day.fetch('open').round(2) %>
+        </td>
+
+        <td>
+          <%= a_day.fetch('high').round(2) %>
+        </td>
+
+        <td>
+          <%= a_day.fetch('low').round(2) %>
+        </td>
+
+        <td>
+          <%= a_day.fetch('return').round(2) %>
+        </td>
+      </tr>
+      <% end %>
+    </table>
   </div>
 </div>
-
 <hr>

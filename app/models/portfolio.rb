@@ -21,7 +21,8 @@ class Portfolio < ApplicationRecord
   validates(:portfoliovalue, {:presence => true})
 
   
-  #has_many(:stocks, class_name='Stock', foreign_key='ticker')
+  #has_many(:stocks, class_name: 'Stock', foreign_key: 'ticker')
   #belongs_to(:user, class_name='User', foreign_key='user_id')
+
 
 end
