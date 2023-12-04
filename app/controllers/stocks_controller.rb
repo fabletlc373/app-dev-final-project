@@ -4,6 +4,7 @@ class StocksController < ApplicationController
     # refresh all stocks in the universe
     all_stocks = Stock.distinct.pluck(:ticker)
     all_stocks.each do |s|
+      # for the sake of preserving api calls...
       next if Stock.where("ticker=? AND day=?", s, the_date).count > 0
       api_url = "https://api.twelvedata.com/time_series?symbol=#{s}&interval=1day&apikey=#{ENV["STOCK_API_KEY"]}"
 
@@ -15,7 +16,9 @@ class StocksController < ApplicationController
       all_prices_array.each { |x| x["ticker"] = s }
       all_prices_array.each_cons(2).map { |p1, p2| p1["return"] = (((p1["close"].to_f / p2["close"].to_f) - 1) * 100).round(3) }
       all_prices_array.last["return"] = 0
+      # create will not insert if validations fail: in this case it cannot insert where stock + day already exists
       Stock.create(all_prices_array)
+      
     end
     redirect_to("/stocks")
   end

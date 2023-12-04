@@ -10,12 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_03_161213) do
-  create_table "portfolios", force: :cascade do |t|
-    t.date "day"
+ActiveRecord::Schema[7.0].define(version: 2023_12_04_035324) do
+  create_table "portfolio_init_values", force: :cascade do |t|
+    t.integer "user_id"
+    t.decimal "init_value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "portfolio_weights", force: :cascade do |t|
+    t.integer "user_id"
     t.string "ticker"
     t.decimal "weight"
-    t.decimal "dollarpos"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "portfolios", force: :cascade do |t|
+    t.date "day"
     t.decimal "portfoliovalue"
     t.integer "user_id"
     t.datetime "created_at", null: false

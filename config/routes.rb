@@ -12,7 +12,9 @@ Rails.application.routes.draw do
   # DELETE
   get("/delete_portfolio/:path_id", { :controller => "portfolios", :action => "destroy" })
 
-  
+  # REFRESH
+  get("/refresh_portfolio/:path_id", { :controller => "portfolios", :action => "refresh_data" })
+
   #------------------------------
 
   # Routes for the Stock resource:
