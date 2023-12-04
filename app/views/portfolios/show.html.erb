@@ -16,12 +16,13 @@
           Delete portfolio
         </a>
       </div>
+
     </div>
 
 
     <dl>
       <dt>
-        Average annualized return
+        Average Annualized return
       </dt>
       <dd>
         <%=@annualized_ret%>
@@ -44,6 +45,10 @@
       </dd>
 
     </dl>
+<hr>
+    <!-- some plotting?-->
+<%=line_chart(@cumu_rets, points: false, xtitle: 'Day', ytitle: 'Close $')%>
+<hr>
 
     <table border="1">
       <tr>

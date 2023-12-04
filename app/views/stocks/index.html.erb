@@ -1,54 +1,30 @@
-<div>
-  <div>
-    <h2>
-      Today's Market Conditions
-    </h2>
+<div class="container text-center">
+  <div class="row">
+    <div class="col">
+      <h4>
+        Today's Market Conditions
+      </h4>
+    </div>
+
   </div>
 </div>
 
 <hr>
 
 <div>
-  <div>
-    <h2>
-      Add a new stock
-    </h2>
-
+  <p>
     <form action="/insert_stock" method="post">
-      <div>
-        <label for="ticker_box">
-          Ticker
-        </label>
-
-        <input type="text" id="ticker_box" name="query_ticker">
-      </div>
-
-      <button>
-        Create stock
-      </button>
+      <label for="ticker_box">Can't find a stock you like? Add it here:</label>
+      <input type="text" id="ticker_box" name="query_ticker">
+      <button>Create stock</button>
     </form>
-  </div>
-
-  <div>
-    <h3>Refresh all data</h3>
-    Note that there is an 8 name per minute restriction, and a 800 credit limit per day!
-    <form action="/refresh_stock">
-      <button>
-        Refresh
-      </button>
-    </form>
-  </div>
-  
+  </p>
 </div>
 
-<hr>
 <div>
   <div>
-    <table border="1">
+    <table border="1" class='table'>
       <tr>
-        <th>
-          ID
-        </th>
 
         <th>
           Day
@@ -57,7 +33,7 @@
         <th>
           Ticker
         </th>
-        
+
         <th>
           Close
         </th>
@@ -79,67 +55,53 @@
         </th>
 
         <th>
-          Created at
-        </th>
-
-        <th>
-          Updated at
-        </th>
-
-        <th>
         </th>
       </tr>
 
       <% @list_of_stocks.each do |a_stock| %>
-      <tr>
-        <td>
-          <%= a_stock.fetch('id') %>
-        </td>
+        <tr>
+          <td>
+            <%= a_stock.fetch('day') %>
+          </td>
 
-        <td>
-          <%= a_stock.fetch('day') %>
-        </td>
+          <td>
+            <%= a_stock.fetch('ticker') %>
+          </td>
 
-        <td>
-          <%= a_stock.fetch('ticker') %>
-        </td>
+          <td>
+            <%= a_stock.fetch('close').round(2) %>
+          </td>
 
-        <td>
-          <%= a_stock.fetch('close') %>
-        </td>
+          <td>
+            <%= a_stock.fetch('open').round(2) %>
+          </td>
 
-        <td>
-          <%= a_stock.fetch('open') %>
-        </td>
+          <td>
+            <%= a_stock.fetch('high').round(2) %>
+          </td>
 
-        <td>
-          <%= a_stock.fetch('high') %>
-        </td>
+          <td>
+            <%= a_stock.fetch('low').round(2) %>
+          </td>
 
-        <td>
-          <%= a_stock.fetch('low') %>
-        </td>
+          <td class=<%=if a_stock.fetch('return') < 0 then 'table-danger' else 'table-success' end %>>
+            <%= a_stock.fetch('return').round(2) %>
+          </td>
 
-        <td>
-          <%= a_stock.fetch('return') %>
-        </td>
-
-        <td>
-          <%= time_ago_in_words(a_stock.fetch('created_at')) %> ago
-        </td>
-        <td>
-          <%= time_ago_in_words(a_stock.fetch('updated_at')) %> ago
-        </td>
-
-        <td>
-          <a href="/stocks/<%= a_stock.fetch('ticker') %>">
-            Show details
-          </a>
-        </td>
-      </tr>
+          <td>
+            <a href="/stocks/<%= a_stock.fetch('ticker') %>">
+              Show details
+            </a>
+          </td>
+        </tr>
       <% end %>
     </table>
   </div>
 </div>
 
 <hr>
+
+<form action="/refresh_stock">
+  <button>Refresh all data</button>
+</form>
+<small>Note that there is an 8 name per minute restriction, and a 800 credit limit per day!</small>

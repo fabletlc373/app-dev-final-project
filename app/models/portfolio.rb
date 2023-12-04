@@ -19,10 +19,15 @@ class Portfolio < ApplicationRecord
   validates(:dollarpos, {:presence => true})
   validates(:weight, {:presence => true})
   validates(:portfoliovalue, {:presence => true})
-
+  # weights cannot be > 1
+  validates :weight, numericality: { less_than_or_equal_to: 1}
+  validates :weight, numericality: { greater_than_or_equal_to: 0}
+  
   
   #has_many(:stocks, class_name: 'Stock', foreign_key: 'ticker')
   #belongs_to(:user, class_name='User', foreign_key='user_id')
+
+  
 
 
 end

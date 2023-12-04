@@ -1,112 +1,138 @@
+<div class="container text-center">
+  <div class="row">
+    <div class="col-md-auto"><a href="/stocks" class="link-primary">Go back</a></div>
+    <div class="col col-lg-9">
+      <h3><%= @the_ticker %></h3>
+    </div>
+    <div class="col-md-auto"><a href="/delete_stock/<%= @the_ticker %>" class="link-danger">Delete stock</a></div>
+  </div>
+</div>
+
 <div>
-  <div>
-    <h1>
-      <%= @the_ticker %> details
-    </h1>
 
-    <div>
-      <div>
-        <a href="/stocks">
-          Go back
-        </a>
+  <div class="container text-center">
+    <div class="row">
+      <div class="col">
+        <h5> Statistics </h5>
+        <table border="1" class='table'>
+          <th>
+            Period
+          </th>
+          <th>
+            Annualized Return
+          </th>
+          <th>
+            Annualized Std Dev
+          </th>
+          <th>
+            Annualized Sharpe Ratio
+          </th>
+          <%@years.each do |y|%>
+            <%rets = (@matching_stock.where("cast(strftime('%Y', day) as int) = ?", y).pluck(:return).map { |ret| (ret / 100).round(2)})%>
+            <%sub_annualized_ret, sub_annualized_std, sub_annualized_sr, sub_cumu_rets = return_stats(rets)%>
+            <tr>
+              <td>
+                <%=y%>
+              </td>
+              <td>
+                <%=sub_annualized_ret  %>
+              </td>
+
+              <td>
+                <%=sub_annualized_std %>
+              </td>
+
+              <td>
+                <%=sub_annualized_sr %>
+              </td>
+            </tr>
+          <%end%>
+          <tbody class="table-group-divider">
+            <tr>
+              <td>
+                <b>All Time</b>
+              </td>
+              <td>
+                <b><%=@annualized_ret  %></b>
+              </td>
+
+              <td>
+                <b><%=@annualized_std %></b>
+              </td>
+
+              <td>
+                <b><%=@annualized_sr %></b>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-
-      <div>
-        <a href="/delete_stock/<%= @the_ticker %>">
-          Delete stock
-        </a>
+      <div class="col">
+        <%=line_chart(@cumu_rets, points: false, xtitle: 'Day', ytitle: '$', title: "Cumulative Value of $1")%>
+        <%=line_chart @close_prcs, points: false, xtitle: 'Day', ytitle: 'Close $',  title: "Daily Close Prices"%>
       </div>
     </div>
-
-    <dl>
-      <dt>
-        Average annualized return
-      </dt>
-      <dd>
-        <%=@annualized_ret  %>
-      </dd>
-
-      <dt>
-        Annualized Std Dev
-      </dt>
-      Note this assumes independent returns
-      <dd>
-        <%= @annualized_std %>
-      </dd>
-
-       <dt>
-        Annualized Std Dev
-      </dt>
-      Note this assumes independent returns
-      <dd>
-        <%= @annualized_sr %>
-      </dd>
-
-    </dl>
   </div>
-</div>
-<hr>
-<!-- some plotting?-->
-<%=line_chart @matching_stock.group_by_day(:day).sum(:close), points: false, xtitle: 'Day', ytitle: 'Close $'%>
 
-<hr>
-<h3>Recent 100-day data </h3>
-<div>
+  <hr>
+
+  <h5>Recent 100-day data </h5>
   <div>
-    <table border="1">
-      <tr>
-        <th>
-          Day
-        </th>
+    <div>
+      <table border="1" class='table'>
+        <tr>
+          <th>
+            Day
+          </th>
 
-        <th>
-          Close
-        </th>
+          <th>
+            Close
+          </th>
 
-        <th>
-          Open
-        </th>
-        
-        <th>
-          High
-        </th>
+          <th>
+            Open
+          </th>
 
-        <th>
-          Low
-        </th>
+          <th>
+            High
+          </th>
 
-        <th>
-          Return
-        </th>
+          <th>
+            Low
+          </th>
 
-      <% @matching_stock_recent100.each do |a_day| %>
-      <tr>
-        <td>
-          <%= a_day.fetch('day') %>
-        </td>
+          <th>
+            Return
+          </th>
 
-        <td>
-          <%= a_day.fetch('close').round(2) %>
-        </td>
+          <% @matching_stock_recent100.each do |a_day| %>
+            <tr>
+              <td>
+                <%= a_day.fetch('day') %>
+              </td>
 
-        <td>
-          <%= a_day.fetch('open').round(2) %>
-        </td>
+              <td>
+                <%= a_day.fetch('close').round(2) %>
+              </td>
 
-        <td>
-          <%= a_day.fetch('high').round(2) %>
-        </td>
+              <td>
+                <%= a_day.fetch('open').round(2) %>
+              </td>
 
-        <td>
-          <%= a_day.fetch('low').round(2) %>
-        </td>
+              <td>
+                <%= a_day.fetch('high').round(2) %>
+              </td>
 
-        <td>
-          <%= a_day.fetch('return').round(2) %>
-        </td>
-      </tr>
-      <% end %>
-    </table>
-  </div>
-</div>
-<hr>
+              <td>
+                <%= a_day.fetch('low').round(2) %>
+              </td>
+
+              <td class=<%=if a_day.fetch('return') < 0 then 'table-danger' else 'table-success' end %>>
+                <%= a_day.fetch('return').round(2) %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    </div>
+    <hr>

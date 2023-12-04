@@ -26,15 +26,17 @@ class StocksController < ApplicationController
   end
 
   def show
-    ######### to do... figure out plotting here ##################
     @the_ticker = params.fetch("ticker")
-    @matching_stock = Stock.where({ :ticker => @the_ticker })
-    @matching_stock_recent100 = @matching_stock.order(:day => :desc).limit(100)
+    @matching_stock = Stock.where({ :ticker => @the_ticker }).where('return!=?', 0).order(:day => :asc)
+    @matching_stock_recent100 = Stock.where({ :ticker => @the_ticker }).where('return!=?', 0).order(:day => :desc).limit(100)
 
-    rets = @matching_stock.pluck(:return).map { |ret| ret / 100 }
-    
-    @annualized_ret, @annualized_std, @annualized_sr = self.return_stats(rets)
-    #asdf
+@years = @matching_stock.pluck(:day).map{|d| d.year}.uniq
+    rets = (@matching_stock.pluck(:return).map { |ret| (ret / 100).round(2)})
+  
+    # return stats
+    @annualized_ret, @annualized_std, @annualized_sr, cumu_rets = self.return_stats(rets)
+    @cumu_rets = Hash[@matching_stock.pluck(:day).zip(cumu_rets)]
+    @close_prcs = Hash[@matching_stock.pluck(:day).zip(@matching_stock.pluck(:close))]
     render({ :template => "stocks/show" })
   end
 
@@ -88,8 +90,8 @@ class StocksController < ApplicationController
     the_stock = params.fetch("ticker")
 
     # first you need to make sure that it doesn't exist on other portfolios before deleting
-    allstocksused = Portfolio.where('weight != ?', 0).pluck(:ticker)
-    if allstocksused.include? the_stock then
+    allstocksused = Portfolio.where("weight != ?", 0).pluck(:ticker)
+    if allstocksused.include? the_stock
       redirect_to("/stocks", { :alert => "Cannot delete stock... it's being used by another portfolio" })
     else
       the_stock = Stock.where({ :ticker => the_stock }).delete_all

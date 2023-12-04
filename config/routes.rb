@@ -9,10 +9,6 @@ Rails.application.routes.draw do
   # view
   get("/my_portfolio", { :controller => "portfolios", :action => "show" })
   
-  # UPDATE
-  
-  post("/modify_portfolio/:path_id", { :controller => "portfolios", :action => "update" })
-  
   # DELETE
   get("/delete_portfolio/:path_id", { :controller => "portfolios", :action => "destroy" })
 

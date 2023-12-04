@@ -1,33 +1,13 @@
 class PortfoliosController < ApplicationController
-  def running_product(arr)
-    result = 1
-    running_products = []
-
-    arr.each do |num|
-      result *= num
-      running_products << result
-    end
-
-    running_products
-  end
-
-  def show
-    # check if has portfolio
-    if current_user.has_portfolio==true && current_user!=nil then
-      @current_user = current_user
-      #todo: add the returns to this table
-      sql = "select distinct day, portfoliovalue, return from portfolios where user_id=#{current_user.id}"
-      @the_portfolio = ActiveRecord::Base.connection.exec_query(sql)
-
-      # compute some additional statistics
-      # get the returns first
-      rets = @the_portfolio.rows.map{|r| r[2]}
-      @annualized_ret, @annualized_std, @annualized_sr = self.return_stats(rets)
-      render({ :template => "portfolios/show" })
+  def norm_weights(w)
+    # rescales weights to 0-1 scale
+    # takes in an array
+    the_sum = w.sum(0.0)
+    if the_sum!=1 then
+      return w.map{|a| a/the_sum}
     else
-      redirect_to("/build_portfolio", { :alert => "No portfolio found... build yours here!" })
+      return w
     end
-    
   end
 
   def build
@@ -38,20 +18,22 @@ class PortfoliosController < ApplicationController
   def create
     # check if the user current has a portfolio, if they do, redirect to the portfolio home page
     if current_user != nil && current_user.has_portfolio==false then
-
       # assumes that each day you will hold the portfolio according to these weights
-      weights = params.keys.grep(/weights/)
+      weights = params.select{|k, v| k.include? "weights" and v.to_f!=0}
+      # normalize the weights, if necessary
+      new_weights = norm_weights(weights.values.map{|w| w.to_f})
+      weights = Hash[weights.keys.map{|k| k.gsub(/_weights/, "")}.zip(new_weights)]
       # first, insert each weight for the initial date
-      weights.each do |w|
+      weights.each do |s, w|
         init_portfolio = Portfolio.new
         init_portfolio.day = params.fetch("startdate")
-        s = w.gsub(/_weights/, "")
         init_portfolio.ticker = s
-        init_portfolio.weight = params.fetch(w)
+        init_portfolio.weight = w
         init_portfolio.portfoliovalue = params.fetch("dollarval")
-        init_portfolio.dollarpos = params.fetch("dollarval").to_f * params.fetch(w).to_f
+        init_portfolio.dollarpos = params.fetch("dollarval").to_f * w
         init_portfolio.user_id = current_user.id
         init_portfolio.return=0
+
         if init_portfolio.valid?
           init_portfolio.save
         end
@@ -59,7 +41,8 @@ class PortfoliosController < ApplicationController
       end
 
       # compute the daily returns... its easier to do this directly via sql
-
+      # todo, renormalize weights when value is missing
+      # can we do the loading/computation all in 1?
       sql = "select stocks.day as day, sum(weight * stocks.return) as return from portfolios
     right join stocks
     on stocks.ticker=portfolios.ticker and portfolios.user_id=#{current_user.id}
@@ -68,21 +51,20 @@ class PortfoliosController < ApplicationController
       results = ActiveRecord::Base.connection.exec_query(sql)
       ptf_dates = results.rows.map { |ret| ret[0] }
       ptf_returns = results.rows.map { |ret| ret[1] }
-      ptf_values = running_product(ptf_returns.map { |ret| 1 + ret / 100 })
+      ptf_values = self.running_product(ptf_returns.map { |ret| 1 + ret / 100 })
 
       # load the values back into the db
       ptf_dates.each do |d|
         i = ptf_dates.index(d)
         ptf_value_day = ptf_values[i]
         ptf_return_day = ptf_returns[i]
-        weights.each do |w|
+        weights.each do |s, w|
           d_portfolio = Portfolio.new
           d_portfolio.day = d
-          s = w.gsub(/_weights/, "")
           d_portfolio.ticker = s
-          d_portfolio.weight = params.fetch(w)
+          d_portfolio.weight = w
           d_portfolio.portfoliovalue = ptf_value_day
-          d_portfolio.dollarpos = ptf_value_day * params.fetch(w).to_f
+          d_portfolio.dollarpos = ptf_value_day * w
           d_portfolio.user_id = current_user.id
           d_portfolio.return = ptf_return_day
           if d_portfolio.valid?
@@ -96,6 +78,34 @@ class PortfoliosController < ApplicationController
       redirect_to("/my_portfolio", { :alert => "A portfolio already exists!" })
     end
   end
+
+  def show
+    # check if has portfolio
+    if current_user.has_portfolio==true && current_user!=nil then
+      @current_user = current_user
+      sql = "select distinct day, portfoliovalue, return from portfolios where user_id=#{current_user.id} and return!=0"
+      @the_portfolio = ActiveRecord::Base.connection.exec_query(sql)
+
+      sql = "select distinct day, portfoliovalue, return from portfolios where user_id=#{current_user.id} order by day desc limit 1"
+      init_value = ActiveRecord::Base.connection.exec_query(sql).rows[0][1]
+
+      # compute some additional statistics
+      # get the returns first
+      rets = @the_portfolio.rows.map{|r| (r[2]/100).round(2)}
+
+      
+      @annualized_ret, @annualized_std, @annualized_sr, cumu_rets = self.return_stats(rets)
+      cumu_value = cumu_rets.map{|r| r * init_value}
+
+      @cumu_rets = Hash[@the_portfolio.rows.map{|r| r[0]}.zip(cumu_value)]
+      #asdf
+      render({ :template => "portfolios/show" })
+    else
+      redirect_to("/build_portfolio", { :alert => "No portfolio found... build yours here!" })
+    end
+    
+  end
+
 
   def update
     the_id = params.fetch("path_id")
@@ -119,7 +129,7 @@ class PortfoliosController < ApplicationController
   def destroy
     the_id = params.fetch("path_id")
     the_portfolio = Portfolio.where({ :user_id => the_id })
-    the_portfolio.destroy_all
+    the_portfolio.delete_all
 
     redirect_to("/build_portfolio", { :notice => "Portfolio deleted successfully." })
   end
