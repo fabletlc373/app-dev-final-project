@@ -18,7 +18,6 @@ class StocksController < ApplicationController
       all_prices_array.last["return"] = 0
       # create will not insert if validations fail: in this case it cannot insert where stock + day already exists
       Stock.create(all_prices_array)
-      
     end
     redirect_to("/stocks")
   end
@@ -30,12 +29,12 @@ class StocksController < ApplicationController
 
   def show
     @the_ticker = params.fetch("ticker")
-    @matching_stock = Stock.where({ :ticker => @the_ticker }).where('return!=?', 0).order(:day => :asc)
-    @matching_stock_recent100 = Stock.where({ :ticker => @the_ticker }).where('return!=?', 0).order(:day => :desc).limit(100)
+    @matching_stock = Stock.where({ :ticker => @the_ticker }).where("return!=?", 0).order(:day => :asc)
+    @matching_stock_recent100 = Stock.where({ :ticker => @the_ticker }).where("return!=?", 0).order(:day => :desc).limit(100)
 
-@years = @matching_stock.pluck(:day).map{|d| d.year}.uniq
-    rets = (@matching_stock.pluck(:return).map { |ret| (ret / 100).round(2)})
-  
+    @years = @matching_stock.pluck(:day).map { |d| d.year }.uniq
+    rets = (@matching_stock.pluck(:return).map { |ret| (ret / 100).round(2) })
+
     # return stats
     @annualized_ret, @annualized_std, @annualized_sr, cumu_rets = self.return_stats(rets)
     @cumu_rets = Hash[@matching_stock.pluck(:day).zip(cumu_rets)]

@@ -1,4 +1,4 @@
-class Portfolio_Weight < ApplicationRecord
+class PortfolioWeight < ApplicationRecord
   # weights cannot be > 1
   validates(:weight, {:presence => true})
   validates :weight, numericality: { less_than_or_equal_to: 1 }

@@ -1,87 +1,84 @@
-<div>
-  <div>
-    <h1>
-      Portfolio #<%= current_user.id %> details
-    </h1>
-
-    <div>
-      <div>
-        <a href="/portfolios">
-          Go back
-        </a>
-      </div>
-
-      <div>
-        <a href="/delete_portfolio/<%= @current_user.id %>">
-          Delete portfolio
-        </a>
-      </div>
-
-      
-      <div>
-        <a href="/refresh_portfolio/<%= @current_user.id %>">
-          Delete portfolio
-        </a>
-      </div>
-
+<div class="container text-center">
+  <div class="row">
+    <div class="col"><a href="/stocks" class="link-primary">Go back</a></div>
+    <div class="col"><a href="/delete_portfolio/<%= @current_user.id %> class="link-danger">Delete portfolio</a></div>
+    <div class="col"><a href="/refresh_portfolio/<%= @current_user.id %>">Refresh Portfolio</a></div>
+  </div>
+</div>
+<hr>
+<div class="container text-center">
+  <div class="row">
+    <div class="col">
+      <h3>User #<%= current_user.id %>'s Portfolio</h3>
     </div>
+  </div>
+</div>
 
-
-    <dl>
-      <dt>
-        Average Annualized return
-      </dt>
-      <dd>
-        <%=@annualized_ret%>
-      </dd>
-
-      <dt>
-        Annualized Std Dev
-      </dt>
-      Note this assumes independent returns
-      <dd>
-        <%= @annualized_std %>
-      </dd>
-
-       <dt>
-        Annualized Sharpe Ratio
-      </dt>
-      Note this assumes independent returns
-      <dd>
-        <%= @annualized_sr %>
-      </dd>
-
-    </dl>
-<hr>
-    <!-- some plotting?-->
-<%=line_chart(@cumu_rets, points: false, xtitle: 'Day', ytitle: 'Close $')%>
-<hr>
-
-    <table border="1">
-      <tr>
-        <th>
-          Day
-        </th>
-        <th>
-          Portfolio Value
-        </th>
-        <th>
-          Portfolio Return
-        </th>
-
-        <% @the_portfolio.each do |p| %>
+<div class="container text-center">
+  <div class="row">
+    <div class="col">
+      <h5> Statistics </h5>
+      <table border="1" class='table'>
+        <th>Period</th>
+        <th>Annualized Return</th>
+        <th>Annualized Std Dev</th>
+        <th>Annualized Sharpe Ratio</th>
+        <%@years.each do |y|%>
+          <%rets = (@the_portfolio.where("cast(strftime('%Y', day) as int) = ?", y).pluck(:return).map { |ret| (ret / 100).round(2)})%>
+          <%sub_annualized_ret, sub_annualized_std, sub_annualized_sr, sub_cumu_rets = return_stats(rets)%>
           <tr>
-            <td>
-              <%= p['day'] %>
-            </td>
-            <td>
-              <%= p['portfoliovalue'] %>
-            </td>
-            <td>
-              <%= p['return'] %>
-            </td>
-
+            <td><%=y%></td>
+            <td><%=sub_annualized_ret  %></td>
+            <td><%=sub_annualized_std %></td>
+            <td><%=sub_annualized_sr %></td>
           </tr>
         <%end%>
+        <tbody class="table-group-divider">
+          <tr>
+            <td><b>All Time</b></td>
+            <td><b><%=@annualized_ret  %></b></td>
+            <td><b><%=@annualized_std %></b></td>
+            <td><b><%=@annualized_sr %></b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-        <hr>
+    <div class="col">
+      <%=line_chart(@cumu_values, points: false, xtitle: 'Day', ytitle: '$', title: "Cumulative Value of Portfolio")%>
+    </div>
+
+  </div>
+</div>
+<hr>
+
+<div class="container text-center">
+  <div class="row">
+    <div class="col">
+      <h5> Historical Portfolio Values </h5>
+    </div>
+  </div>
+</div>
+
+<table border="1" class='table'>
+  <tr>
+    <th>
+      Day
+    </th>
+    <th>
+      Portfolio Value
+    </th>
+    <th>
+      Portfolio Return
+    </th>
+  </tr>
+  <% @the_portfolio.each do |p| %>
+    <tr>
+      <td><%= p.day %></td>
+      <td><%= p.portfoliovalue %></td>
+      <td class=<%= if p.return < 0 then 'table-danger' else 'table-success' end %>>
+        <%=p.return.round(2) %>
+      </td>
+    </tr>
+  <%end%>
+</table>

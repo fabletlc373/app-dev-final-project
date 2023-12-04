@@ -9,7 +9,6 @@
 </div>
 
 <div>
-
   <div class="container text-center">
     <div class="row">
       <div class="col">
@@ -76,7 +75,13 @@
 
   <hr>
 
-  <h5>Recent 100-day data </h5>
+  <div class="container text-center">
+    <div class="row">
+      <div class="col">
+        <h5>Recent 100-day data </h5>
+      </div>
+    </div>
+  </div>
   <div>
     <div>
       <table border="1" class='table'>
@@ -104,35 +109,36 @@
           <th>
             Return
           </th>
+        </tr>
+        <% @matching_stock_recent100.each do |a_day| %>
+          <tr>
+            <td>
+              <%= a_day.fetch('day') %>
+            </td>
 
-          <% @matching_stock_recent100.each do |a_day| %>
-            <tr>
-              <td>
-                <%= a_day.fetch('day') %>
-              </td>
+            <td>
+              <%= a_day.fetch('close').round(2) %>
+            </td>
 
-              <td>
-                <%= a_day.fetch('close').round(2) %>
-              </td>
+            <td>
+              <%= a_day.fetch('open').round(2) %>
+            </td>
 
-              <td>
-                <%= a_day.fetch('open').round(2) %>
-              </td>
+            <td>
+              <%= a_day.fetch('high').round(2) %>
+            </td>
 
-              <td>
-                <%= a_day.fetch('high').round(2) %>
-              </td>
+            <td>
+              <%= a_day.fetch('low').round(2) %>
+            </td>
 
-              <td>
-                <%= a_day.fetch('low').round(2) %>
-              </td>
-
-              <td class=<%=if a_day.fetch('return') < 0 then 'table-danger' else 'table-success' end %>>
-                <%= a_day.fetch('return').round(2) %>
-              </td>
-            </tr>
-          <% end %>
-        </table>
-      </div>
+            <td class=<%=if a_day.fetch('return') < 0 then 'table-danger' else 'table-success' end %>>
+              <%= a_day.fetch('return').round(2) %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
     </div>
-    <hr>
+  </div>
+  <hr>
+</div>
