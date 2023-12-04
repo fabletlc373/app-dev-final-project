@@ -1,34 +1,56 @@
-
-    <h1>
-      Initial Portfolio Setup
-    </h1>
-
+<div class="container text-center">
+  <div class="row">
+    <div class="col">
+      <h4>
+        Initial Portfolio Setup
+      </h4>
+    </div>
+  </div>
+</div>
 <hr>
 
-  <div>
-    <h2>
-      Create portfolio
-    </h2>
-<form action="/create_portfolio" method="post">
-    <% @all_stocks.each do |a_stock| %>
-      <div>
-      <label for=<%=a_stock%>><%=a_stock%> weights:</label>
-      <input type="number" min="0" max="1" step="0.01" id=<%=a_stock%> name="<%=a_stock%>_weights" value=0>
+<div>
+  <div class="container text-left">
+    <div class="row">
+      <div class='col'>
+        <dl class="row">
+          <dt class="col-sm-3">Weights</dt>
+          <dd class="col-sm-9">ALl weights need to be between 0 and 1, and sum to 1. Where necessary, a 0-1 normalization will be applied to the weights. A key assumption is weights are dynamically adjusted each day</dd>
+
+          <dt class="col-sm-3">PortfolioValue</dt>
+          <dd class="col-sm-9">The Portfolio Value represents the inital dollar invested in this portfolio</dd>
+
+          <dt class="col-sm-3">Refreshing the Portfolio</dt>
+          <dd class="col-sm-9">The "Refresh" button on the Portfolio details page assumes all stocks have been updated for the day. If the stock data is stale, make sure to refresh that before updating the portfolio.</dd>
+
+          <dt class="col-sm-3">Number of Portfolios per User</dt>
+          <dd class="col-sm-9">Each User can only have one Portfolio (for now).</dd>
+
+        </div>
+        <div class='col'>
+          <form action="/create_portfolio" method="post">
+            <% @all_stocks.each do |a_stock| %>
+              <div>
+                <label for=<%=a_stock%>><%=a_stock%> weights:</label>
+                  <input type="number" min="0" max="1" step="0.01" id=<%=a_stock%> name="<%=a_stock%>_weights" value=0>
+                </div>
+                <div>
+                </div>
+              <%end%>
+              <div>
+                <label for='startdate'> StartDate:</label>
+                <input type="date" id='startdate' name="startdate">
+              </div>
+              <div>
+                <label for='dollarval'>Inital Dollar Position:</label>
+                <input type="number" id='dollarval' name="dollarval" value=1>
+              </div>
+              <button>
+                Create portfolio
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-      <div>
-      </div>
-    <%end%>
-    <div>
-      <label for='startdate'> StartDate:</label>
-      <input type="date" id='startdate' name="startdate">
-      </div>
-      <div>
-      <label for='dollarval'>Inital Dollar Position:</label>
-      <input type="number" id='dollarval' name="dollarval" value=1>
-    </div>
-      <button>
-        Create portfolio
-      </button>
-    </div>
-</form>
-<hr>
+
+      <hr>
