@@ -20,7 +20,7 @@
 class Stock < ApplicationRecord
   validates(:ticker, {:uniqueness => {:scope => [:day], :allow_nil => false}})
   # validates(:day, {:uniqueness => {:scope => [:id]}})
-  belongs_to(:portfolio, class_name: 'Portfolio', foreign_key: 'ticker')
+  #belongs_to(:portfolio, class_name: 'Portfolio', foreign_key: 'ticker')
 
   def lastsnap
     qry = "select *

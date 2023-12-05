@@ -7,7 +7,7 @@ class StocksController < ApplicationController
       # for the sake of preserving api calls...
       next if Stock.where("ticker=? AND day=?", s, the_date).count > 0
       api_url = "https://api.twelvedata.com/time_series?symbol=#{s}&interval=1day&apikey=#{ENV["STOCK_API_KEY"]}"
-
+      
       raw_data = HTTP.get(api_url)
       parsed_data = JSON.parse(raw_data)
       all_prices_array = parsed_data.fetch("values")
